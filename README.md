@@ -158,3 +158,26 @@ Layout 模板。
 1. Ant Design 国内
 2. Material UI 国外
 3. TailWind UI 国外流行，收费
+
+## 表单组件
+使用 AntDesign 表单组件，开发登陆，注册，搜索功能 
+
+表单组件的校验和错误提示，几种方案
+
+受控组件，值同步state, 使用value属性
+
+React Hook Form, Formix
+
+## 网络请求
+搭建Mock服务, 作为临时的服务端
+1. mock.js
+2. node.js + mock.js
+3. mock平台
+
+使用Ajax和服务端通讯，并应用于现有功能， 
+
+API设计，使用Restful API
+
+为列表页，登录页，注册页，增加Ajax请求
+
+
