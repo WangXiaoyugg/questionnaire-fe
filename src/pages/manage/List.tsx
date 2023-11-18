@@ -1,6 +1,8 @@
 import React, { FC, useState } from 'react'
-import QuestionCard from '../components/QuestionCard'
+import { useSearchParams } from 'react-router-dom'
+import QuestionCard from '../../components/QuestionCard'
 import styles from './List.module.scss'
+import { useTitle } from 'ahooks'
 
 const rawQuestionList = [
   {
@@ -38,6 +40,8 @@ const rawQuestionList = [
 ]
 
 const List: FC = () => {
+  useTitle('飞飞问卷 - 我的问卷')
+  const [searchParams] = useSearchParams()
   const [questionList, setQuestionList] = useState(rawQuestionList)
   return (
     <>
@@ -53,7 +57,7 @@ const List: FC = () => {
           return <QuestionCard key={_id} {...q} />
         })}
       </div>
-      <div className={styles.footer}>Footer</div>
+      <div className={styles.footer}>List Footer</div>
     </>
   )
 }
