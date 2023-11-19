@@ -6,13 +6,16 @@ import { UserOutlined } from '@ant-design/icons'
 import { LOGIN_PATHNAME } from '../router'
 import { getUserInfoService } from '../services/user'
 import { removeToken } from '../utils/user-token'
-
+import useGetUserInfo from '../hooks/useGetUserInfo'
+import { useDispatch } from 'react-redux'
+import { logoutReducer } from '../store/user'
 const UserInfo: FC = () => {
   const nav = useNavigate()
-  const { data } = useRequest(getUserInfoService)
-  const { username, nickname } = data || {}
+  const dispatch = useDispatch()
+  const { username, nickname } = useGetUserInfo()
 
   function logout() {
+    dispatch(logoutReducer())
     removeToken()
     nav(LOGIN_PATHNAME)
     message.success('退出成功')

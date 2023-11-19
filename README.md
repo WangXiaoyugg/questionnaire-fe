@@ -256,4 +256,27 @@ JSON web Token
 
 以后每次请求携带token, 表明自己的身份
 
+## 状态管理 Redux
+学习 Redux 的使用，管理用户状态
 
+学习 React 内置 Context 和 useReducer(不支持模块化)
+Context: context = createContext(), <Context.Provider value={value} > {...children} </Context.Provider>,  ctx = useContext(context)
+
+
+第三方工具 Redux, mobx
+
+状态管理： 集中，统一的管理页面状态
+
+Redux
+1. store 存储 state
+2. action
+3. dispatch
+4. reducer
+5. Provider
+6. 配合immer使用
+7. 开发者工具和插件
+
+Mobx(类似Vuex)
+1. state
+2. action
+3. derivation 派生，Observable
