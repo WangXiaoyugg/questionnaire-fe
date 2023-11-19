@@ -1,9 +1,11 @@
 import React, { FC } from 'react'
-import { Typography, Space, Form, Input, Button } from 'antd'
+import { Typography, Space, Form, Input, Button, message } from 'antd'
 import { UserAddOutlined } from '@ant-design/icons'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import styles from './Register.module.scss'
+import { useRequest } from 'ahooks'
 import { LOGIN_PATHNAME } from '../router'
+import { registerService } from '../services/user'
 
 const { Title } = Typography
 
@@ -15,8 +17,25 @@ type FormValueTypes = {
 }
 
 const Register: FC = () => {
+  const nav = useNavigate()
+  const { run: register } = useRequest(
+    async (username: string, password: string, nickname?: string) => {
+      const data = await registerService(username, password, nickname)
+      return data
+    },
+    {
+      manual: true,
+      onSuccess() {
+        message.success('注册成功')
+        nav(LOGIN_PATHNAME)
+      },
+    }
+  )
+
   function onFinish(values: FormValueTypes) {
     console.log(values)
+    const { username, password, nickname } = values
+    register(username, password, nickname)
   }
 
   return (

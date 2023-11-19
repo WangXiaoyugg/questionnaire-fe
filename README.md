@@ -249,4 +249,11 @@ API设计，使用Restful API
 
 为列表页，登录页，注册页，增加Ajax请求
 
+### JWT
+JSON web Token
+
+登陆成功后，服务端返回一个 token (令牌)
+
+以后每次请求携带token, 表明自己的身份
+
 

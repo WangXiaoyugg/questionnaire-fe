@@ -1,8 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios'
 import { message } from 'antd'
+import { getToken } from '../utils/user-token'
+
 const instance = axios.create({
   timeout: 10 * 1000,
+})
+
+instance.interceptors.request.use(config => {
+  config.headers['Authorization'] = `Bearer ${getToken()}`
+  return config
 })
 
 instance.interceptors.response.use(res => {
