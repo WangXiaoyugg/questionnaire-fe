@@ -24,5 +24,6 @@ module.exports = {
   },
   rules: {
     "@typescript-eslint/no-unused-vars": 1,
+    '@typescript-eslint/no-explicit-any': 0,
   },
 }

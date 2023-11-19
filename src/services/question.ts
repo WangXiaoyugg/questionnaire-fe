@@ -1,0 +1,52 @@
+import ajax, { ResDataType } from './ajax'
+
+type SearchOption = {
+  keyword: string
+  isStar: boolean
+  isDeleted: boolean
+  page: number
+  pageSize: number
+}
+
+export async function getQuestionService(id: string): Promise<ResDataType> {
+  const url = `/api/question/${id}`
+  const data = (await ajax.get(url)) as ResDataType
+  return data
+}
+
+export async function createQuestionService(): Promise<ResDataType> {
+  const url = `/api/question`
+  const data = (await ajax.post(url)) as ResDataType
+  return data
+}
+
+export async function getQuestionListService(
+  option: Partial<SearchOption> = {}
+): Promise<ResDataType> {
+  const url = `/api/question`
+  const data = (await ajax.get(url, {
+    params: option,
+  })) as ResDataType
+  return data
+}
+
+export async function updateQuestionService(
+  id: string,
+  opt: { [key: string]: any }
+): Promise<ResDataType> {
+  const url = `/api/question/${id}`
+  const data = (await ajax.patch(url, opt)) as ResDataType
+  return data
+}
+
+export async function duplicateQuestionService(id: string): Promise<ResDataType> {
+  const url = `/api/question/duplicate/${id}`
+  const data = (await ajax.post(url)) as ResDataType
+  return data
+}
+
+export async function deleteQuestionService(ids: string[]): Promise<ResDataType> {
+  const url = `/api/question`
+  const data = (await ajax.post(url, { ids })) as ResDataType
+  return data
+}

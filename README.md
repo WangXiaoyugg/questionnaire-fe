@@ -171,12 +171,81 @@ React Hook Form, Formix
 ## 网络请求
 搭建Mock服务, 作为临时的服务端
 1. mock.js
+   1. 只能劫持 XMLHttpRequest, 不能劫持fetch
+   2. 要在生产环境注释Mockjs， 否则线上请求也被劫持
+   3. 在项目中不推荐使用
 2. node.js + mock.js
-3. mock平台
+3. 在线mock平台
+   1. Y-API, Fast-mock, Swagger
+   2. 可能不稳定，不维护，或者网络不稳定
+   3. 可能存在敏感数据泄漏的风险
 
 使用Ajax和服务端通讯，并应用于现有功能， 
 
 API设计，使用Restful API
+1. 用户API
+   1. 注册
+   2. 登陆
+   3. 获取用户信息
+
+2. 问卷API
+   1. 创建问卷
+   2. 获取单个问卷
+   3. 更新问卷
+   4. 删除问卷
+   5. 查询问卷列表
+   6. 复制问卷
+
+### 获取用户信息
+- method `get`
+- path `/api/user/info`
+- response `{errno: 0, data: {...}}`
+
+### 注册
+- method `get`
+- path `/api/user/register`
+- request body `{username, password, nickname }`
+- response `{errno: 0, data: {...}}`
+
+### 登陆
+- method `get`
+- path `/api/user/login`
+- request body `{username, password }`
+- response `{errno: 0, token }`  **JWT** 使用token
+
+### 创建问卷
+- method `post`
+- path `/api/question`
+- request body - 无， 点击一个按钮即可创建，title自动生成
+- response `{errno: 0, data: {id, title, ...} }`  
+
+### 获取单个问卷
+- method `get`
+- path `/api/question/:id`
+- response `{errno: 0, data: {id, title, ...} }`  
+
+### 获取问卷列表
+- method `get`
+- path `/api/question`
+- response `{errno: 0, data: {list: [], total } }`
+
+### 更新问卷信息
+- method `patch`
+- path `/api/question/:id`
+- response `{errno: 0 }`
+
+### 彻底批量删除问卷
+- method `delete`
+- path `/api/question`
+- request body `{ids: [] }`
+- response `{errno: 0 }`
+
+### 复制删除问卷
+- method `delete`
+- path `/api/question/duplicate/:id`
+- response `{errno: 0, data: {id} }`
+
+所有接口使用 RESTful API, 用户验证使用JWT, 统一返回格式 `{errno, data, msg}`
 
 为列表页，登录页，注册页，增加Ajax请求
 

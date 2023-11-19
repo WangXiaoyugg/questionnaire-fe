@@ -1,52 +1,91 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useEffect, useState, useRef, useMemo } from 'react'
+import { useTitle, useDebounceFn, useRequest } from 'ahooks'
+import { Typography, Spin, Empty } from 'antd'
 import { useSearchParams } from 'react-router-dom'
-import { useTitle } from 'ahooks'
-import { Typography } from 'antd'
 import QuestionCard from '../../components/QuestionCard'
 import styles from './common.module.scss'
 import ListSearch from '../../components/ListSearch'
+import { getQuestionListService } from '../../services/question'
+import { LIST_PAGE_SIZE, LIST_SEARCH_PARAM_KEY } from '../../constants'
 
 const { Title } = Typography
 
-const rawQuestionList = [
-  {
-    _id: 'q1',
-    title: '问卷1',
-    isPublished: false,
-    isStar: false,
-    answerCount: 5,
-    createdAt: '11月18日 08:30',
-  },
-  {
-    _id: 'q2',
-    title: '问卷2',
-    isPublished: true,
-    isStar: true,
-    answerCount: 10,
-    createdAt: '11月8日 08:30',
-  },
-  {
-    _id: 'q3',
-    title: '问卷3',
-    isPublished: false,
-    isStar: false,
-    answerCount: 15,
-    createdAt: '11月28日 10:30',
-  },
-  {
-    _id: 'q4',
-    title: '问卷4',
-    isPublished: true,
-    isStar: false,
-    answerCount: 35,
-    createdAt: '11月10日 12:30',
-  },
-]
-
 const List: FC = () => {
   useTitle('飞飞问卷 - 我的问卷')
+  const containerRef = useRef<HTMLDivElement>(null)
   const [searchParams] = useSearchParams()
-  const [questionList, setQuestionList] = useState(rawQuestionList)
+  const [list, setList] = useState([])
+  const [page, setPage] = useState(1)
+  const [total, setTotal] = useState(0)
+  const [started, setStarted] = useState(false)
+  const haveMoreData = total > list.length
+  const keyword = searchParams.get(LIST_SEARCH_PARAM_KEY) || ''
+
+  useEffect(() => {
+    setPage(1)
+    setList([])
+    setTotal(0)
+    setStarted(false)
+  }, [keyword])
+
+  const { run: load, loading } = useRequest(
+    async () => {
+      const data = await getQuestionListService({
+        page,
+        pageSize: LIST_PAGE_SIZE,
+        keyword,
+      })
+      return data
+    },
+    {
+      manual: true,
+      onSuccess(result) {
+        const { list: l = [], total: t = 0 } = result
+        setList(list.concat(l))
+        setTotal(t)
+        setPage(page + 1)
+      },
+    }
+  )
+
+  const { run: tryLoadMore } = useDebounceFn(
+    () => {
+      console.log('tryLoadMore')
+      const el = containerRef.current
+      if (el == null) return
+      const domRect = el.getBoundingClientRect()
+      if (domRect == null) return
+      const { bottom } = domRect
+      if (bottom <= document.body.clientHeight) {
+        load()
+        setStarted(true)
+      }
+    },
+    {
+      wait: 500,
+    }
+  )
+
+  useEffect(() => {
+    tryLoadMore()
+  }, [searchParams])
+
+  useEffect(() => {
+    if (haveMoreData) {
+      window.addEventListener('scroll', tryLoadMore)
+    }
+    return () => {
+      window.removeEventListener('scroll', tryLoadMore)
+    }
+  }, [searchParams, haveMoreData])
+
+  const LoadMoreContentElement = useMemo(() => {
+    if (!started || loading) return <Spin />
+    if (total === 0) return <Empty description="暂无数据" />
+    if (!haveMoreData) return <span>没有更多了</span>
+    return <span>开始加载下一页</span>
+  }, [started, loading, haveMoreData])
+
   return (
     <>
       <div className={styles.header}>
@@ -58,13 +97,15 @@ const List: FC = () => {
         </div>
       </div>
       <div className={styles.content}>
-        {questionList.length > 0 &&
-          questionList.map(q => {
+        {list.length > 0 &&
+          list.map((q: any) => {
             const { _id } = q
             return <QuestionCard key={_id} {...q} />
           })}
       </div>
-      <div className={styles.footer}>LoadMore...上划加载更多...</div>
+      <div className={styles.footer}>
+        <div ref={containerRef}>{LoadMoreContentElement}</div>
+      </div>
     </>
   )
 }
