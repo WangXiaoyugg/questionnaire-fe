@@ -9,8 +9,7 @@ const QuestionLayout: FC = () => {
   useNavPage(waitingUserData)
 
   return (
-    <>
-      <div>QuestionLayout Header</div>
+    <div style={{ height: '100vh' }}>
       <div>
         {waitingUserData ? (
           <div style={{ textAlign: 'center', marginTop: '150px' }}>
@@ -20,7 +19,7 @@ const QuestionLayout: FC = () => {
           <Outlet />
         )}
       </div>
-    </>
+    </div>
   )
 }
 

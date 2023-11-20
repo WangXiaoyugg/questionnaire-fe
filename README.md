@@ -280,3 +280,8 @@ Mobx(类似Vuex)
 1. state
 2. action
 3. derivation 派生，Observable
+
+## 问卷编辑器的开发
+1. 需求分析
+2. 技术方案设计
+3. 功能开发
